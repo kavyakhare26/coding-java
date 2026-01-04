@@ -1,0 +1,21 @@
+public class powerr {
+    
+    static int power(int p, int q){
+    
+     if(q==0) return 1;
+     int smallpow = power(p,q/2);
+     if(q %2==0){
+        return smallpow*smallpow;
+     }
+     else{
+        return;
+     }
+    }
+    public static void main(String [] args){
+    System.out.println(power(2,4));
+    //System.out.println(power(2,3));
+
+   }
+}
+    
+

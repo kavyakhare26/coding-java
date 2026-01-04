@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Management System</title>
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        /* Base Styles */
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: #f6fbff;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        /* HEADER */
+        header {
+            background: linear-gradient(to right, #1e90ff, #5ab9ff);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* NAVBAR */
+        nav {
+            background: white;
+            display: flex;
+            justify-content: center;
+            padding: 12px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        nav a {
+            color: #1e90ff;
+            margin: 0 10px;
+            font-size: 16px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+            cursor: pointer; /* Added for interaction */
+        }
+        nav a:hover {
+            color: #005bbb;
+            text-decoration: underline;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            background: linear-gradient(to bottom, #e6f3ff, white);
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .hero h1 {
+            font-size: clamp(24px, 5vw, 40px);
+            color: #005bbb;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: clamp(16px, 2.5vw, 20px);
+            color: #333;
+        }
+
+        /* FEATURES - UPDATED FOR HOME BUTTONS */
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 40px 10px;
+        }
+
+        .feature-box {
+            background: white;
+            width: clamp(250px, 80vw, 30%);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); /* Slightly stronger shadow for button feel */
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .feature-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        .feature-box i {
+            font-size: 40px;
+            color: #1e90ff;
+            margin-bottom: 10px;
+        }
+        .feature-box h3 {
+            font-size: 18px;
+            color: #005bbb;
+        }
+        .feature-box p {
+             font-size: 14px;
+             color: #666;
+        }
+
+        /* --- FORM STYLES (Existing Add Vehicle) --- */
+        .form-container {
+            width: clamp(320px, 90vw, 1000px);
+            background: white;
+            margin: 30px auto;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            min-height: 400px;
+            flex-direction: column;
+        }
+        /* Existing form styles remain... */
+        .form-sidebar {
+            width: 100%;
+            background: #f8fbfd; 
+            padding: 20px;
+            border-radius: 12px 12px 0 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .sidebar-title {
+            color: #1e90ff;
+            font-size: 20px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .steps-wrapper {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-step-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            color: #888;
+            font-weight: 600;
+            position: relative;
+            cursor: default;
+        }
+        .form-step-item.active {
+            color: #1e90ff;
+        }
+        .step-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #d0e7ff;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            margin-right: 15px;
+            z-index: 10;
+            border: 2px solid #d0e7ff;
+            flex-shrink: 0;
+        }
+        .form-step-item.active .step-icon {
+            background: #1e90ff;
+            border-color: #1e90ff;
+        }
+        /* Vertical line between steps */
+        .form-step-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 12px;
+            top: 25px;
+            width: 2px;
+            height: 100%;
+            background: #e0e0e0;
+        }
+        .form-step-item.active:not(:last-child)::after {
+            background: #1e90ff;
+        }
+        .form-content {
+            flex-grow: 1;
+            padding: 30px 40px;
+        }
+        .form-content h2 {
+            color: #005bbb;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        .input-item {
+            flex: 1 1 45%; /* Responsive two columns */
+            min-width: 280px;
+        }
+        .full-width {
+            flex: 1 1 100%;
+        }
+        input[type="text"], input[type="email"], input[type="tel"], input[type="date"], select, input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #d0e7ff;
+            border-radius: 6px;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        input:focus, select:focus {
+            border-color: #1e90ff;
+        }
+        label {
+            display: block; 
+            margin-bottom: 5px; 
+            font-weight: bold; 
+            font-size: 14px; 
+            color: #444;
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        button {
+            background: #1e90ff;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.2s, transform 0.1s;
+        }
+        button.btn-secondary {
+            background: #ccc;
+            color: #333;
+        }
+        button:hover {
+            background: #005bbb;
+            transform: translateY(-1px);
+        }
+        button.btn-secondary:hover {
+            background: #b0b0b0;
+        }
+        /* Summary Style */
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        .summary-item strong {
+            color: #005bbb;
+        }
+
+        /* Confirmation Style */
+        .confirmation-message {
+            text-align: center;
+            padding: 40px 20px;
+            background: #e6ffed;
+            border: 2px solid #1e90ff;
+            border-radius: 8px;
+            color: #005bbb;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        /* Responsive Adjustments */
+        @media (min-width: 768px) {
+            .form-container.active, #registration-request-section.active .form-inner { 
+                flex-direction: row;
+            }
+            .form-sidebar {
+                width: 300px;
+                border-radius: 12px 0 0 12px;
+                border-right: 1px solid #e0e0e0;
+                border-bottom: none;
+                padding: 30px 20px;
+            }
+            .sidebar-title {
+                text-align: left;
+            }
+            .steps-wrapper {
+                flex-direction: column;
+            }
+            nav a {
+                margin: 0 20px;
+                font-size: 18px;
+            }
+        }
+
+        /* TABLE */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 30px auto;
+            width: clamp(320px, 90vw, 1200px);
+        }
+        table {
+            width: 100%;
+            min-width: 800px; /* Ensure table is readable on small screens */
+            border-collapse: collapse;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            background-color: white;
+        }
+        /* Existing table styles remain... */
+        th, td {
+            border: 1px solid #cce4ff;
+            padding: 12px;
+            text-align: center;
+            font-size: 14px;
+        }
+        th {
+            background: #1e90ff;
+            color: white;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background: #f0f8ff;
+        }
+        
+        /* Footer */
+        footer {
+            background: #005bbb;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            font-size: 14px; 
+        }
+
+        /* Utility class to hide sections by default */
+        .main-content-section:not(#home-section) { 
+            display: none;
+        }
+
+        /* Special case for the form container to use flex */
+        .form-container {
+            display: none;
+        }
+        .form-container.active {
+            display: flex;
+        }
+
+        /* Generic Section Style for About/Contact */
+        .generic-section {
+            width: clamp(320px, 90vw, 1000px);
+            background: white;
+            margin: 30px auto;
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        /* ... rest of generic section styles ... */
+        .generic-section h2 {
+            color: #005bbb;
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+        .generic-section p {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .contact-card {
+            margin-top: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+        }
+        .contact-box {
+            background: #f8fbfc;
+            padding: 25px;
+            border: 1px solid #d0e7ff;
+            border-radius: 8px;
+            text-align: left;
+            width: clamp(280px, 40vw, 400px);
+        }
+        .contact-box h3 {
+            color: #005bbb;
+            font-size: 22px;
+            margin: 0 0 15px 0;
+            border-bottom: 2px solid #e6f3ff;
+            padding-bottom: 8px;
+        }
+        .contact-box p {
+            font-size: 16px;
+            color: #333;
+            margin: 8px 0;
+        }
+        .contact-box i {
+            color: #1e90ff;
+            margin-right: 10px;
+        }
+        .contact-box a {
+            color: #333;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .contact-box a:hover {
+            color: #005bbb;
+        }
+
+        /* --- 1. Real-Time Dashboard Styles --- */
+        #real-time-dashboard-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            width: clamp(320px, 90vw, 1000px);
+            margin: 30px auto;
+        }
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            text-align: left;
+            border-left: 5px solid #1e90ff;
+            display: flex;
+            flex-direction: column;
+        }
+        .stat-card h4 {
+            font-size: 14px;
+            color: #666;
+            margin: 0 0 10px 0;
+            font-weight: 500;
+        }
+        .stat-card .value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #005bbb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .stat-card .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .indicator.green { background-color: #3cb371; }
+        .indicator.yellow { background-color: #ff8c00; }
+        .indicator.red { background-color: #dc143c; }
+
+        /* Clock & Date Card */
+        .clock-card {
+            background: linear-gradient(135deg, #1e90ff, #005bbb);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+            text-align: center;
+            grid-column: 1 / -1; /* Full width */
+        }
+        #live-time {
+            font-size: 40px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        #live-date {
+            font-size: 18px;
+            opacity: 0.8;
+        }
+        
+        /* --- 2. Advanced Form Styles --- */
+        #registration-request-section {
+             width: clamp(320px, 90vw, 1000px);
+             margin: 30px auto;
+        }
+        #registration-request-section .form-inner {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Form specific selectors for Advanced Form */
+        .advanced-form-step-item.active {
+            color: #ff8c00; /* Use a different color to distinguish from main form */
+        }
+        .advanced-form-step-item.active .step-icon {
+            background: #ff8c00;
+            border-color: #ff8c00;
+        }
+        .advanced-form-step-item.active:not(:last-child)::after {
+            background: #ff8c00;
+        }
+        .advanced-form-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        /* --- 3. Search & Analysis Panel Styles --- */
+        #user-specific-search-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #user-search-container {
+            width: clamp(300px, 60vw, 500px);
+            background: white;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        #user-search-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #d0e7ff;
+            border-radius: 6px;
+            outline: none;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        #user-search-input:focus {
+            border-color: #1e90ff;
+        }
+        
+        /* Profile Card */
+        .profile-card {
+            width: clamp(320px, 90vw, 1000px);
+            margin: 30px auto 20px auto;
+            background: #f0f8ff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #cce4ff;
+        }
+        .profile-info { text-align: left; }
+        .profile-info h3 { color: #005bbb; margin: 0 0 5px 0; font-size: 20px; }
+        .profile-info p { font-size: 14px; margin: 3px 0; color: #444; }
+        .profile-stats { text-align: right; }
+        .profile-stats h4 { font-size: 14px; color: #666; margin: 0 0 5px 0; }
+        .profile-stats .value { font-size: 28px; font-weight: bold; color: #dc143c; }
+
+        /* Quick Actions */
+        .quick-actions {
+            text-align: center;
+            margin: 15px auto 30px auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            width: clamp(320px, 90vw, 1000px);
+        }
+        .quick-actions button {
+            background: #3cb371;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+        }
+        .quick-actions button:nth-child(2) { background: #ff8c00; }
+        .quick-actions button:nth-child(3) { background: #1e90ff; }
+
+    </style>
+</head>
+
+<body onload="setupApplication()">
+
+    <!-- HEADER -->
+    <header>
+        🚗 Vehicle Management System
+    </header>
+
+    <!-- NAVIGATION MENU -->
+    <nav id="main-nav">
+        <a data-target="home-section">Home</a>
+        <a data-target="add-vehicle-section">Add Vehicle</a>
+        <a data-target="vehicle-list-section">Vehicle List</a>
+        <a data-target="about-section">About</a>
+        <a data-target="contact-section">Contact</a>
+    </nav>
+
+    <!-- 1. HOME SECTION -->
+    <div id="home-section" class="main-content-section active"> 
+        <!-- HERO -->
+        <section class="hero">
+            <h1>Manage Your Cars Easily</h1>
+            <p>Track vehicle owner, model, brand & all details with a clean and modern dashboard.</p>
+        </section>
+
+        <!-- FEATURE HIGHLIGHTS - NOW ACT AS NAVIGATION BUTTONS -->
+        <div class="features">
+            <!-- 1. REAL-TIME DATA BUTTON -->
+            <div class="feature-box" onclick="switchSection('real-time-dashboard-section')">
+                <i class="fas fa-tachometer-alt"></i>
+                <h3>Real-Time Dashboard</h3>
+                <p>View live system statistics and vehicle status indicators.</p>
+            </div>
+            <!-- 2. MULTIPLE-STEP ADVANCED FORM BUTTON (New Feature) -->
+            <div class="feature-box" onclick="switchSection('registration-request-section')">
+                <i class="fas fa-file-invoice"></i>
+                <h3>Registration Request</h3>
+                <p>Submit an advanced, multi-step registration request with documentation.</p>
+            </div>
+            <!-- 3. USER-SPECIFIC VIEW BUTTON (New Feature) -->
+            <div class="feature-box" onclick="switchSection('user-specific-search-section')">
+                <i class="fas fa-user-check"></i>
+                <h3>Search & Analysis Panel</h3>
+                <p>Filter vehicle details, view user profiles, and access quick actions.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. ADD VEHICLE SECTION (Existing Multi-Step Form) -->
+    <div id="add-vehicle-section" class="form-container main-content-section">
+        <!-- The existing 5-step form structure (sidebar and content) remains here -->
+        <div class="form-sidebar">
+            <div class="sidebar-title">ADD NEW VEHICLE</div>
+            <div class="steps-wrapper">
+                <div class="form-step-item active" data-step="1"> <span class="step-icon">1</span> <div>Vehicle Details <p style="font-size: 12px; margin: 2px 0 0 0; color: #a0a0a0;">Basic vehicle information</p></div> </div>
+                <div class="form-step-item" data-step="2"> <span class="step-icon">2</span> <div>Owner Details <p style="font-size: 12px; margin: 2px 0 0 0; color: #a0a0a0;">Contact & personal info</p></div> </div>
+                <div class="form-step-item" data-step="3"> <span class="step-icon">3</span> <div>Registration & Insurance <p style="font-size: 12px; margin: 2px 0 0 0; color: #a0a0a0;">Document details</p></div> </div>
+                <div class="form-step-item" data-step="4"> <span class="step-icon">4</span> <div>Summary Review <p style="font-size: 12px; margin: 2px 0 0 0; color: #a0a0a0;">Confirm your data</p></div> </div>
+                <div class="form-step-item" data-step="5"> <span class="step-icon">5</span> Confirmation </div>
+            </div>
+        </div>
+
+        <div class="form-content">
+            <h2 id="form-content-title">Vehicle Details</h2>
+            
+            <div id="vehicle-details" class="step-content">
+                <p style="color: #666; margin-bottom: 25px;">Please enter the basic details of the vehicle.</p>
+                <div class="input-group">
+                    <div class="input-item"><label for="brand">Car Brand</label><select id="brand"></select></div>
+                    <div class="input-item"><label for="carName">Car Name/Model</label><select id="carName"></select></div>
+                </div>
+                <div class="input-group">
+                    <div class="input-item"><label for="registrationNumber">Registration Number</label><input type="text" id="registrationNumber" placeholder="e.g., UP 32 HK 1234, DL 01 AB 8899, MH 12 KT 5621"></div>
+                    <div class="input-item"><label for="modelYear">Model Year</label><select id="modelYear"></select></div>
+                </div>
+                <div class="input-group">
+                    <div class="input-item full-width"><label for="color">Color</label><select id="color"></select></div>
+                </div>
+            </div>
+
+            <div id="owner-details" class="step-content" style="display: none;">
+                <p style="color: #666; margin-bottom: 25px;">Provide the owner's contact and personal information.</p>
+                <div class="input-group">
+                    <div class="input-item"><label for="ownerName">Owner Name</label><input type="text" id="ownerName" placeholder="Full Name"></div>
+                    <div class="input-item"><label for="contactNumber">Contact Number</label><input type="tel" id="contactNumber" placeholder="e.g., 9876543210"></div>
+                </div>
+                <div class="input-group">
+                    <div class="input-item full-width"><label for="ownerEmail">Owner Email</label><input type="email" id="ownerEmail" placeholder="email@example.com"></div>
+                </div>
+                <div class="input-group">
+                    <div class="input-item full-width"><label for="ownerAddress">Owner Address</label><input type="text" id="ownerAddress" placeholder="Street, City, State/Province"></div>
+                </div>
+            </div>
+
+            <div id="registration-insurance" class="step-content" style="display: none;">
+                <p style="color: #666; margin-bottom: 25px;">Enter the relevant document and expiry details.</p>
+                <div class="input-group">
+                    <div class="input-item full-width"><label for="licenseExpiry">License Plate Expiry Date</label><input type="date" id="licenseExpiry"></div>
+                </div>
+                <div class="input-group">
+                    <div class="input-item"><label for="insurancePolicy">Insurance Policy Number</label><input type="text" id="insurancePolicy" placeholder="Policy ID"></div>
+                    <div class="input-item"><label for="insuranceExpiry">Insurance Expiry Date</label><input type="date" id="insuranceExpiry"></div>
+                </div>
+            </div>
+
+            <div id="summary-review" class="step-content" style="display: none;">
+                <p style="color: #666; margin-bottom: 25px;">Review all the information before saving.</p>
+                <div id="summary-data">
+                    <p style="text-align: center; color: #888;">No data loaded for summary.</p>
+                </div>
+            </div>
+            
+            <div id="confirmation-success" class="step-content" style="display: none;">
+                <div class="confirmation-message">
+                    <i class="fas fa-check-circle fa-2x" style="margin-bottom: 10px;"></i>
+                    <p>Vehicle Registered Successfully!</p>
+                    <p style="font-size: 14px; font-weight: normal; margin-top: 15px;">Your data has been saved to the database. You can find it in the table below.</p>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button id="prev-btn" class="btn-secondary" onclick="handlePrev()" style="display: none;"><i class="fas fa-arrow-left"></i> Previous</button>
+                <div style="flex-grow: 1;"></div>
+                <button id="next-btn" onclick="handleNext()">Next Step <i class="fas fa-arrow-right"></i></button>
+                <button id="save-btn" style="display: none;" onclick="saveVehicleData()"><i class="fas fa-save"></i> Save Vehicle</button>
+                <button id="new-btn" style="display: none;" onclick="resetForm()"><i class="fas fa-plus-circle"></i> Add New Vehicle</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. VEHICLE LIST SECTION (User-Specific Table) -->
+    <div id="vehicle-list-section" class="table-wrapper main-content-section">
+        <table id="vehicle-table">
+            <thead>
+                <tr>
+                    <th>Reg No.</th>
+                    <th>Brand</th>
+                    <th>Model</th>
+                    <th>Owner</th>
+                    <th>Contact</th>
+                    <th>Color</th>
+                    <th>Insurance Expiry</th>
+                    <th>User ID</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Vehicle list will be dynamically inserted here -->
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- 4. NEW: REAL-TIME DASHBOARD -->
+    <div id="real-time-dashboard-section" class="main-content-section">
+        <section class="hero" style="padding-bottom: 0;">
+            <h1>Real-Time Dashboard</h1>
+            <p>Live system statistics and critical vehicle status indicators.</p>
+        </section>
+
+        <div class="stats-grid">
+             <!-- Clock & Date Card - Full Width -->
+            <div class="clock-card">
+                <div id="live-time">00:00:00</div>
+                <div id="live-date">Monday, 01 January 2025</div>
+            </div>
+
+            <!-- Total Registered Vehicles (Green Indicator) -->
+            <div class="stat-card" style="border-left-color: #1e90ff;">
+                <h4>Total Registered Vehicles</h4>
+                <div class="value" id="stat-total">0</div>
+            </div>
+            
+            <!-- Total Active Insurance (Green Indicator) -->
+            <div class="stat-card" style="border-left-color: #3cb371;">
+                <h4>Total Active Insurance</h4>
+                <div class="value" id="stat-active-insurance">0 <span class="indicator green"></span></div>
+            </div>
+
+            <!-- Today’s New Entries (Blue Indicator) -->
+            <div class="stat-card" style="border-left-color: #005bbb;">
+                <h4>Today’s New Entries</h4>
+                <div class="value" id="stat-new-entries">0</div>
+            </div>
+
+            <!-- Vehicles with Expiring Insurance in next 30 days (Yellow Indicator) -->
+            <div class="stat-card" style="border-left-color: #ff8c00;">
+                <h4>Expiring Insurance (30 Days)</h4>
+                <div class="value" id="stat-expiring-soon">0 <span class="indicator yellow"></span></div>
+            </div>
+
+            <!-- Vehicles without user ID (Red Indicator) -->
+            <div class="stat-card" style="border-left-color: #dc143c;">
+                <h4>Vehicles Missing User ID (Mock)</h4>
+                <div class="value" id="stat-missing-id">3 <span class="indicator red"></span></div>
+            </div>
+
+        </div>
+        
+        <div class="table-wrapper" style="margin-top: 0;">
+            <p style="text-align: center; color: #666; margin-bottom: 10px;">*Full system vehicle list for reference.</p>
+             <table id="full-vehicle-list-table">
+                <thead>
+                    <tr>
+                        <th>Reg No.</th>
+                        <th>Brand</th>
+                        <th>Model</th>
+                        <th>Owner</th>
+                        <th>Insurance Expiry</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td colspan="5" style="text-align:center;">Loading full list...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 5. NEW: MULTIPLE-STEP ADVANCED FORM -->
+    <div id="registration-request-section" class="main-content-section">
+         <section class="hero" style="padding-bottom: 0;">
+            <h1>Advanced Vehicle Registration Request</h1>
+            <p>Use this form to submit detailed technical and documentation requests.</p>
+        </section>
+        
+        <div class="form-inner">
+            <!-- Sidebar Navigation (Advanced Form) -->
+            <div class="form-sidebar">
+                <div class="sidebar-title">REGISTRATION REQUEST</div>
+                <div class="steps-wrapper">
+                    <div class="form-step-item active advanced-form-step-item" data-step="1"> <span class="step-icon">1</span> <div>User Identity Verification</div> </div>
+                    <div class="form-step-item advanced-form-step-item" data-step="2"> <span class="step-icon">2</span> <div>Vehicle Technical Details</div> </div>
+                    <div class="form-step-item advanced-form-step-item" data-step="3"> <span class="step-icon">3</span> <div>Documentation & Summary</div> </div>
+                </div>
+            </div>
+
+            <!-- Form Content Area (Advanced Form) -->
+            <div class="form-content">
+                <h2 id="advanced-form-title">Step 1: User Identity Verification</h2>
+                
+                <!-- Step 1: User Identity Verification -->
+                <div id="adv-step-1" class="advanced-step-content">
+                    <div class="input-group">
+                        <div class="input-item"><label for="advUserName">User Name</label><input type="text" id="advUserName" placeholder="Your Full Name"></div>
+                        <div class="input-item"><label for="advUserEmail">User Email</label><input type="email" id="advUserEmail" placeholder="email@domain.com"></div>
+                    </div>
+                    <div class="input-group">
+                        <div class="input-item"><label for="advMobileNumber">Mobile Number</label><input type="tel" id="advMobileNumber" placeholder="e.g., 9876543210"></div>
+                        <div class="input-item"><label for="advPurpose">Choose Purpose</label>
+                            <select id="advPurpose">
+                                <option value="">Select Purpose</option>
+                                <option value="Personal">Personal</option>
+                                <option value="Commercial">Commercial</option>
+                                <option value="Rental">Rental</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <div class="input-item full-width"><label for="advProfilePhoto">Upload Profile Photo (Optional)</label><input type="file" id="advProfilePhoto" accept="image/*"></div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Vehicle Technical Details -->
+                <div id="adv-step-2" class="advanced-step-content" style="display: none;">
+                    <div class="input-group">
+                        <div class="input-item"><label for="advVehicleType">Vehicle Type</label>
+                            <select id="advVehicleType">
+                                <option value="">Select Type</option>
+                                <option value="SUV">SUV</option>
+                                <option value="Sedan">Sedan</option>
+                                <option value="Hatchback">Hatchback</option>
+                                <option value="EV">EV (Electric)</option>
+                                <option value="Bike">Bike</option>
+                            </select>
+                        </div>
+                        <div class="input-item"><label for="advVehicleModel">Vehicle Model</label><input type="text" id="advVehicleModel" placeholder="e.g., Creta, Swift, City"></div>
+                    </div>
+                    <div class="input-group">
+                        <div class="input-item"><label for="advManufacturingYear">Manufacturing Year</label><input type="text" id="advManufacturingYear" placeholder="e.g., 2023"></div>
+                        <div class="input-item"><label for="advFuelType">Fuel Type</label>
+                            <select id="advFuelType">
+                                <option value="">Select Fuel</option>
+                                <option value="Petrol">Petrol</option>
+                                <option value="Diesel">Diesel</option>
+                                <option value="CNG">CNG</option>
+                                <option value="Electric">Electric</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                         <div class="input-item full-width"><label for="advTransmission">Transmission</label>
+                            <select id="advTransmission">
+                                <option value="">Select Transmission</option>
+                                <option value="Manual">Manual</option>
+                                <option value="Automatic">Automatic</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Documentation & Summary -->
+                <div id="adv-step-3" class="advanced-step-content" style="display: none;">
+                    <h3 style="color: #1e90ff; margin-bottom: 15px;">Required Documents (Placeholder Uploads)</h3>
+                    <div class="input-group">
+                        <div class="input-item full-width"><label for="advRCUpload">RC Document Upload</label><input type="file" id="advRCUpload"></div>
+                    </div>
+                    <div class="input-group">
+                        <div class="input-item"><label for="advInsuranceUpload">Insurance Document Upload</label><input type="file" id="advInsuranceUpload"></div>
+                        <div class="input-item"><label for="advPollutionUpload">Pollution Certificate Upload</label><input type="file" id="advPollutionUpload"></div>
+                    </div>
+                    
+                    <h3 style="color: #1e90ff; margin: 30px 0 15px 0;">Summary Review</h3>
+                    <div id="advanced-summary-data">
+                        <p style="text-align: center; color: #888;">Complete previous steps to see summary.</p>
+                    </div>
+                </div>
+
+                <!-- Action Buttons (Advanced Form) -->
+                <div class="advanced-form-actions">
+                    <button id="adv-prev-btn" class="btn-secondary" onclick="handleAdvancedPrev()" style="display: none;"><i class="fas fa-arrow-left"></i> Previous</button>
+                    <div style="flex-grow: 1;"></div>
+                    <button id="adv-next-btn" onclick="handleAdvancedNext()">Next Step <i class="fas fa-arrow-right"></i></button>
+                    <button id="adv-submit-btn" style="display: none; background: #3cb371;" onclick="submitAdvancedRequest()">Submit Request <i class="fas fa-paper-plane"></i></button>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 6. NEW: SEARCH & ANALYSIS PANEL -->
+    <div id="user-specific-search-section" class="main-content-section">
+        <section class="hero">
+            <h1>User Vehicle Search & Analysis Panel</h1>
+            <p>Enter a User ID (e.g., U001 to U010) to view user data and detailed vehicle records.</p>
+        </section>
+        
+        <div id="user-search-container">
+            <label for="user-search-input" style="display: block; margin-bottom: 10px; font-weight: bold;">Enter User ID to Search:</label>
+            <input type="text" id="user-search-input" placeholder="e.g., U001" onkeydown="if(event.key === 'Enter') executeUserSearch(this.value)">
+        </div>
+        
+        <!-- Profile Card (Hidden until search) -->
+        <div id="profile-card-container" class="profile-card" style="display: none;">
+            <div class="profile-info">
+                <h3><i class="fas fa-user-circle"></i> <span id="profile-name"></span></h3>
+                <p><i class="fas fa-envelope"></i> <span id="profile-email"></span></p>
+                <p><i class="fas fa-mobile-alt"></i> <span id="profile-phone"></span></p>
+            </div>
+            <div class="profile-stats">
+                <h4>Total Vehicles</h4>
+                <div class="value" id="profile-vehicle-count">0</div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions (Hidden until search) -->
+        <div id="quick-actions-container" class="quick-actions" style="display: none;">
+            <button onclick="viewFullDetails(currentSearchUserId)"><i class="fas fa-info-circle"></i> View Full Details</button>
+            <button onclick="downloadPdfSummary(currentSearchUserId)"><i class="fas fa-file-pdf"></i> Download PDF Summary</button>
+            <button onclick="viewInsuranceAlerts(currentSearchUserId)"><i class="fas fa-bell"></i> View Insurance Alerts</button>
+            <button onclick="viewUpcomingRenewals(currentSearchUserId)"><i class="fas fa-calendar-alt"></i> View Upcoming Renewals</button>
+        </div>
+
+
+        <div id="user-search-table-wrapper" class="table-wrapper">
+             <table id="user-search-results-table">
+                <thead>
+                    <tr>
+                        <th>Reg No.</th>
+                        <th>Model</th>
+                        <th>Status</th>
+                        <th>Reg Expiry</th>
+                        <th>Last Updated</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td colspan="6" style="text-align:center;">Enter a User ID and press Enter to search.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <!-- 7. ABOUT SECTION -->
+    <div id="about-section" class="generic-section main-content-section">
+        <h2>About Vehicle Management System</h2>
+        <p>Our Vehicle Management System is designed to make storing, tracking, and managing vehicle information simple and efficient. This system allows users to easily add vehicles, update details, view complete vehicle lists, and maintain important records such as registration numbers, insurance policy numbers, and user IDs—all in one place.</p>
+        <p>The goal of this platform is to reduce manual work and provide a smooth, user-friendly experience. Whether it's for personal use, a college project, or a small organization, the system helps ensure that every vehicle's information is organized, accessible, and secure.</p>
+        <p>With clean navigation, fast performance, and an easy-to-use interface, our Vehicle Management System makes managing vehicles smarter and more convenient.</p>
+    </div>
+
+    <!-- 8. CONTACT SECTION -->
+    <div id="contact-section" class="generic-section main-content-section">
+        <h2>Contact & Support</h2>
+        <p>Please reach out to our dedicated support team members for assistance with the Vehicle Management System. We are here to help you manage your fleet efficiently.</p>
+        
+        <div class="contact-card">
+            <!-- Contact Box 1: Kanak Rai -->
+            <div class="contact-box">
+                <h3>Kanak Rai</h3>
+                <p>
+                    <i class="fas fa-phone-alt"></i> 
+                    Phone: <a href="tel:9202393169">9202393169</a>
+                </p>
+                <p>
+                    <i class="fas fa-envelope"></i>
+                    Email: <a href="mailto:kanakrai331@gmail.com">kanakrai331@gmail.com</a>
+                </p>
+            </div>
+
+            <!-- Contact Box 2: Kavya Khare -->
+            <div class="contact-box">
+                <h3>Kavya Khare</h3>
+                <p>
+                    <i class="fas fa-phone-alt"></i> 
+                    Phone: <a href="tel:9238984735">9238984735</a>
+                </p>
+                <p>
+                    <i class="fas fa-envelope"></i>
+                    Email: <a href="mailto:kavyakhare897@gmail.com">kavyakhare897@gmail.com</a>
+                </p>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        © 2025 Vehicle Management System
+    </footer>
+
+    <!-- JAVASCRIPT & FIREBASE LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, onSnapshot, collection, addDoc, query, serverTimestamp, getDocs, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        // Global Canvas Variables
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-vms-app-id';
+        const firebaseConfig = typeof _firebase_config !== 'undefined' ? JSON.parse(_firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        
+        let app;
+        let db;
+        let auth;
+        let userId = null;
+        let allSystemVehicles = []; // Store all vehicles for dashboard stats and user search
+
+        // --- EXISTING ADD VEHICLE FORM STATE ---
+        let currentStep = 1;
+        const totalSteps = 5;
+        const formSteps = [
+            'vehicle-details', 'owner-details', 'registration-insurance', 'summary-review', 'confirmation-success'
+        ];
+        let vehicleData = {
+            registrationNumber: '', brand: '', carName: '', modelYear: '', color: '',
+            ownerName: '', contactNumber: '', ownerEmail: '', ownerAddress: '',
+            licenseExpiry: '', insurancePolicy: '', insuranceExpiry: '',
+        };
+        
+        // --- NEW ADVANCED FORM STATE ---
+        let advancedFormStep = 1;
+        const totalAdvancedSteps = 3;
+        let advancedFormData = {
+            advUserName: '', advUserEmail: '', advMobileNumber: '', advPurpose: '', advProfilePhoto: null,
+            advVehicleType: '', advVehicleModel: '', advManufacturingYear: '', advFuelType: '', advTransmission: '',
+            advRCUpload: null, advInsuranceUpload: null, advPollutionUpload: null
+        };
+        const advancedFormSteps = ['adv-step-1', 'adv-step-2', 'adv-step-3'];
+
+        // --- NEW SEARCH STATE ---
+        let currentSearchUserId = '';
+
+
+        // --- CONSTANTS ---
+        const CAR_BRANDS = [
+            'Select Brand', 'Maruti Suzuki', 'Audi', 'BMW', 'KIA', 'Mahindra', 
+            'Tata', 'Toyota', 'Honda', 'MG', 'Renault', 'Volkswagen' 
+        ];
+        const MODEL_YEARS = ['Select Year', '2024', '2023', '2022', '2021', '2020'];
+        const CAR_COLORS = ['Select Color', 'White', 'Red', 'Blue', 'Black', 'Grey'];
+        const CAR_MODELS = [
+            'Select Model', 'Swift', 'Alto', 'WagonR', 'Baleno', 'Dzire', 'Brezza', 
+            'Ertiga', 'i20', 'i10', 'Creta', 'Venue', 'Sonet', 'Seltos', 'Nexon', 'Punch',
+            'Thar', 'City', 'Fortuner', 'Hector', 'Kwid', 'Virtus' 
+        ];
+        const DUMMY_VEHICLES = [
+            { userId: 'U001', registrationNumber: 'UP 32 HK 1234', brand: 'Maruti Suzuki', carName: 'Swift', insurancePolicy: 'MOT-COMP-2025-112233', modelYear: '2023', color: 'Red', ownerName: 'Aarav Sharma', contactNumber: '9800000001', ownerEmail: 'aarav@example.com', ownerAddress: 'New Delhi', licenseExpiry: '2026-05-01', insuranceExpiry: '2025-12-31' },
+            { userId: 'U002', registrationNumber: 'DL 01 AB 8899', brand: 'Hyundai', carName: 'Creta', insurancePolicy: 'MOT-ZD-2025-445566', modelYear: '2024', color: 'White', ownerName: 'Bhumika Singh', contactNumber: '9800000002', ownerEmail: 'bhumika@example.com', ownerAddress: 'Gurgaon', licenseExpiry: '2027-01-15', insuranceExpiry: '2026-01-31' },
+            { userId: 'U003', registrationNumber: 'MH 12 KT 5621', brand: 'Tata', carName: 'Nexon', insurancePolicy: 'TP-MOTOR-66778899', modelYear: '2022', color: 'Black', ownerName: 'Chirag Desai', contactNumber: '9800000003', ownerEmail: 'chirag@example.com', ownerAddress: 'Mumbai', licenseExpiry: '2025-11-20', insuranceExpiry: '2025-11-30' },
+            { userId: 'U004', registrationNumber: 'RJ 14 PC 7788', brand: 'Mahindra', carName: 'Thar', insurancePolicy: 'COMP-MOT-33445522', modelYear: '2024', color: 'Grey', ownerName: 'Divya Patel', contactNumber: '9800000004', ownerEmail: 'divya@example.com', ownerAddress: 'Jaipur', licenseExpiry: '2028-04-10', insuranceExpiry: '2026-04-30' },
+            { userId: 'U005', registrationNumber: 'KA 03 MC 4590', brand: 'Honda', carName: 'City', insurancePolicy: 'ZERO-DEP-2025-909090', modelYear: '2023', color: 'Blue', ownerName: 'Eshan Gowda', contactNumber: '9800000005', ownerEmail: 'eshan@example.com', ownerAddress: 'Bengaluru', licenseExpiry: '2026-03-05', insuranceExpiry: '2025-10-31' },
+            { userId: 'U006', registrationNumber: 'MP 04 CC 9988', brand: 'Toyota', carName: 'Fortuner', insurancePolicy: 'CV-MOT-2025-774411', modelYear: '2021', color: 'White', ownerName: 'Fiza Khan', contactNumber: '9800000006', ownerEmail: 'fiza@example.com', ownerAddress: 'Bhopal', licenseExpiry: '2025-12-01', insuranceExpiry: '2025-12-15' },
+            { userId: 'U007', registrationNumber: 'TN 09 Z 1133', brand: 'KIA', carName: 'Seltos', insurancePolicy: 'DIGI-MOT-55889966', modelYear: '2024', color: 'Red', ownerName: 'Gaurav Iyer', contactNumber: '9800000007', ownerEmail: 'gaurav@example.com', ownerAddress: 'Chennai', licenseExpiry: '2027-06-20', insuranceExpiry: '2026-07-31' },
+            { userId: 'U008', registrationNumber: 'GJ 01 EL 6600', brand: 'MG', carName: 'Hector', insurancePolicy: 'IDV-MOTOR-2025-223344', modelYear: '2022', color: 'Grey', ownerName: 'Harshita Shah', contactNumber: '9800000008', ownerEmail: 'harshita@example.com', ownerAddress: 'Ahmedabad', licenseExpiry: '2026-09-25', insuranceExpiry: '2026-09-30' },
+            { userId: 'U009', registrationNumber: 'HR 26 AE 4433', brand: 'Renault', carName: 'Kwid', insurancePolicy: 'TPL-2025-886644', modelYear: '2020', color: 'Blue', ownerName: 'Ishaan Verma', contactNumber: '9800000009', ownerEmail: 'ishaan@example.com', ownerAddress: 'Faridabad', licenseExpiry: '2025-10-10', insuranceExpiry: '2025-10-25' },
+            { userId: 'U010', registrationNumber: 'WB 06 RR 2200', brand: 'Volkswagen', carName: 'Virtus', insurancePolicy: 'WEB-MOT-2025-998877', modelYear: '2023', color: 'Black', ownerName: 'Jiya Das', contactNumber: '9800000010', ownerEmail: 'jiya@example.com', ownerAddress: 'Kolkata', licenseExpiry: '2027-02-01', insuranceExpiry: '2026-03-01' }
+        ];
+
+        // --- FIREBASE INITIALIZATION ---
+        const VEHICLES_COLLECTION = artifacts/${appId}/public/data/vehicles;
+
+
+        const initializeFirebase = async () => {
+            try {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        checkAndPopulateDummyData();
+                        loadVehicles(); // User-specific list
+                        loadFullVehicleList(); // Full system list for dashboard
+                    } else {
+                        console.error("User not authenticated.");
+                    }
+                });
+
+            } catch (e) {
+                console.error("Firebase initialization failed:", e);
+            }
+        };
+        
+        const checkAndPopulateDummyData = async () => {
+            // Logic remains the same (truncated)
+            try {
+                const q = query(collection(db, VEHICLES_COLLECTION));
+                const snapshot = await getDocs(q);
+                
+                if (snapshot.empty) {
+                    const batchPromises = DUMMY_VEHICLES.map(vehicle => {
+                        return addDoc(collection(db, VEHICLES_COLLECTION), {
+                            ...vehicle,
+                            createdAt: serverTimestamp()
+                        });
+                    });
+                    await Promise.all(batchPromises);
+                } 
+            } catch (e) {
+                console.error("Error during dummy data population:", e);
+            }
+        };
+
+        // --- GLOBAL SETUP & NAVIGATION ---
+
+        window.setupApplication = () => {
+             // 1. Initialize Clock
+             updateClock();
+             setInterval(updateClock, 1000);
+             
+             // 2. Form Setups
+             populateAllDropdowns();
+             setupDataBinding(); // Existing form listeners
+             setupAdvancedFormListeners(); // New advanced form listeners
+
+             // 3. Navigation
+             setupNavigation();
+
+             // 4. Firebase
+             initializeFirebase();
+        };
+
+        const setupNavigation = () => {
+            const mainNav = document.getElementById('main-nav');
+            mainNav.addEventListener('click', (event) => {
+                const target = event.target.closest('a');
+                if (target) {
+                    event.preventDefault();
+                    const targetId = target.getAttribute('data-target');
+                    if (targetId) {
+                        switchSection(targetId);
+                    }
+                }
+            });
+            switchSection('home-section');
+        };
+        
+        window.switchSection = (targetId) => {
+            const sections = document.querySelectorAll('.main-content-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+                section.style.display = 'none';
+            });
+            
+            const targetSection = document.getElementById(targetId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+                
+                if (targetId === 'add-vehicle-section') {
+                    targetSection.style.display = 'flex'; // Existing form uses flex
+                } else {
+                    targetSection.style.display = 'block';
+                }
+
+                // Reset specific sections when navigating away/to
+                if (targetId === 'user-specific-search-section') {
+                    document.getElementById('user-search-input').value = '';
+                    document.getElementById('profile-card-container').style.display = 'none';
+                    document.getElementById('quick-actions-container').style.display = 'none';
+                    const searchTableBody = document.querySelector('#user-search-results-table tbody');
+                    searchTableBody.innerHTML = <tr><td colspan="6" style="text-align:center;">Enter a User ID and press Enter to search.</td></tr>;
+                }
+            }
+        };
+        
+        // --- EXISTING FORM LOGIC: DATA COLLECTION AND VALIDATION (RESTORED) ---
+        const populateDropdown = (selectId, dataArray) => {
+            const select = document.getElementById(selectId);
+            if (!select) return;
+            select.innerHTML = ''; 
+            dataArray.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.startsWith('Select') ? '' : item;
+                option.textContent = item;
+                select.appendChild(option);
+            });
+        };
+
+        const populateAllDropdowns = () => {
+            populateDropdown('brand', CAR_BRANDS);
+            populateDropdown('carName', CAR_MODELS);
+            populateDropdown('modelYear', MODEL_YEARS);
+            populateDropdown('color', CAR_COLORS);
+        };
+        
+        const setupDataBinding = () => {
+            // Existing form data binding
+            const elements = document.querySelectorAll('#add-vehicle-section input, #add-vehicle-section select');
+            elements.forEach(element => {
+                const eventType = element.tagName === 'SELECT' ? 'change' : 'input';
+                element.addEventListener(eventType, (e) => {
+                    if (e.target.id in vehicleData) {
+                        vehicleData[e.target.id] = e.target.value.trim();
+                    }
+                });
+            });
+        };
+        
+        const collectDataFromStep = (stepIndex) => {
+            const stepId = formSteps[stepIndex - 1];
+            const stepElement = document.getElementById(stepId);
+            if (!stepElement) return;
+
+            const inputs = stepElement.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                if (input.id in vehicleData) {
+                    vehicleData[input.id] = input.value.trim();
+                }
+            });
+        };
+
+        const validateStep = (stepIndex) => {
+            collectDataFromStep(stepIndex);
+
+            // Step 1: Vehicle Details
+            if (stepIndex === 1) {
+                const fields = ['registrationNumber', 'brand', 'carName', 'modelYear', 'color'];
+
+                for (const field of fields) {
+                    if (!vehicleData[field]) {
+                        alert(Please select or fill in the ${field.replace(/([A-Z])/g, ' $1').toLowerCase()} field.);
+                        return false;
+                    }
+                }
+            }
+            
+            // Step 2: Owner Details
+            if (stepIndex === 2) {
+                const fields = ['ownerName', 'contactNumber', 'ownerEmail', 'ownerAddress'];
+                for (const field of fields) {
+                    if (!vehicleData[field]) {
+                        alert(Please fill in the ${field.replace(/([A-Z])/g, ' $1').toLowerCase()} field.);
+                        return false;
+                    }
+                }
+                if (!/\S+@\S+\.\S+/.test(vehicleData.ownerEmail)) {
+                    alert('Please enter a valid email address for the owner.');
+                    return false;
+                }
+                if (!/^\d{10}$/.test(vehicleData.contactNumber)) {
+                    alert('Please enter a valid 10-digit contact number.');
+                    return false;
+                }
+            }
+
+            // Step 3: Registration & Insurance
+            if (stepIndex === 3) {
+                const fields = ['licenseExpiry', 'insurancePolicy', 'insuranceExpiry'];
+                for (const field of fields) {
+                    if (!vehicleData[field]) {
+                        alert(Please fill in or select the ${field.replace(/([A-Z])/g, ' $1').toLowerCase()} field.);
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        };
+        
+        // --- EXISTING FORM LOGIC: STEP HANDLING ---
+        const showStep = (step) => {
+            if (step < 1 || step > totalSteps) return;
+
+            currentStep = step;
+            const formStepsDivs = document.querySelectorAll('.step-content');
+            const sidebarItems = document.querySelectorAll('.form-step-item');
+            const formContentTitle = document.getElementById('form-content-title');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const saveBtn = document.getElementById('save-btn');
+            const newBtn = document.getElementById('new-btn');
+
+            formStepsDivs.forEach(div => div.style.display = 'none');
+            const currentContent = document.getElementById(formSteps[step - 1]);
+            if (currentContent) currentContent.style.display = 'block';
+
+            const titles = {
+                1: 'Vehicle Details', 2: 'Owner Details', 3: 'Registration & Insurance', 4: 'Summary Review', 5: 'Confirmation'
+            };
+            formContentTitle.textContent = titles[step];
+            
+            sidebarItems.forEach((item, index) => {
+                item.classList.remove('active');
+                if (index < step) item.classList.add('active');
+            });
+
+            prevBtn.style.display = (step > 1 && step < 5) ? 'block' : 'none';
+            nextBtn.style.display = (step > 0 && step < 4) ? 'block' : 'none';
+            saveBtn.style.display = (step === 4) ? 'block' : 'none';
+            newBtn.style.display = (step === 5) ? 'block' : 'none';
+
+            if (step === 4) {
+                nextBtn.style.display = 'none'; 
+                updateSummary();
+            }
+            if (step === 5) {
+                prevBtn.style.display = 'none';
+            }
+        };
+
+        const updateSummary = () => {
+            const summaryDiv = document.getElementById('summary-data');
+            
+            const dataFields = [
+                { label: 'Registration Number', key: 'registrationNumber' },
+                { label: 'Car Brand', key: 'brand' },
+                { label: 'Car Name/Model', key: 'carName' },
+                { label: 'Model Year', key: 'modelYear' },
+                { label: 'Color', key: 'color' },
+                { label: 'Owner Name', key: 'ownerName' },
+                { label: 'Contact Number', key: 'contactNumber' },
+                { label: 'Owner Email', key: 'ownerEmail' },
+                { label: 'Address', key: 'ownerAddress' },
+                { label: 'License Expiry', key: 'licenseExpiry' },
+                { label: 'Insurance Policy', key: 'insurancePolicy' },
+                { label: 'Insurance Expiry', key: 'insuranceExpiry' },
+            ];
+
+            const html = dataFields.map(field => `
+                <div class="summary-item">
+                    <span>${field.label}:</span>
+                    <strong>${vehicleData[field.key] || 'N/A'}</strong>
+                </div>
+            `).join('');
+
+            summaryDiv.innerHTML = html;
+        };
+
+        window.handleNext = () => {
+            if (validateStep(currentStep)) {
+                showStep(currentStep + 1);
+            }
+        };
+
+        window.handlePrev = () => {
+            showStep(currentStep - 1);
+        };
+
+        window.resetForm = () => {
+            Object.keys(vehicleData).forEach(key => vehicleData[key] = '');
+            const elements = document.querySelectorAll('.step-content input, .step-content select');
+            elements.forEach(element => {
+                element.value = '';
+                if (element.tagName === 'SELECT') {
+                    element.value = ''; 
+                }
+            });
+            showStep(1); 
+        };
+
+        // --- FIRESTORE OPERATION (FIXED) ---
+
+        window.saveVehicleData = async () => {
+            if (!userId) {
+                alert("Authentication is still loading. Please try again in a moment.");
+                return;
+            }
+            if (!db) {
+                alert("Database connection is not ready. Please wait a moment.");
+                return;
+            }
+
+            try {
+                // Ensure data is collected and valid up to step 3 before saving
+                // We validate step 3 here again, just in case the user jumped directly to summary
+                if (!validateStep(3)) { 
+                    showStep(3); 
+                    return;
+                }
+
+                // Add document to the collection
+                const docRef = await addDoc(collection(db, VEHICLES_COLLECTION), {
+                    ...vehicleData,
+                    userId: userId, 
+                    createdAt: serverTimestamp()
+                });
+
+                console.log("Document written with ID: ", docRef.id);
+                showStep(5); // Move to Confirmation step
+
+            } catch (e) {
+                console.error("Error adding document: ", e);
+                alert(Failed to save vehicle data. Error: ${e.message}. Check console for details.);
+            }
+        };
+
+        // --- NEW ADVANCED FORM LOGIC (truncated for brevity) ---
+        
+        const setupAdvancedFormListeners = () => {
+            const elements = document.querySelectorAll('#registration-request-section input, #registration-request-section select');
+            elements.forEach(element => {
+                const eventType = element.type === 'file' ? 'change' : (element.tagName === 'SELECT' ? 'change' : 'input');
+                element.addEventListener(eventType, (e) => {
+                    if (e.target.id in advancedFormData) {
+                        advancedFormData[e.target.id] = e.target.type === 'file' ? e.target.files[0] : e.target.value.trim();
+                    }
+                });
+            });
+        };
+        
+        const showAdvancedStep = (step) => {
+            if (step < 1 || step > totalAdvancedSteps) return;
+
+            advancedFormStep = step;
+            const contentDivs = document.querySelectorAll('.advanced-step-content');
+            const sidebarItems = document.querySelectorAll('.advanced-form-step-item');
+            const title = document.getElementById('advanced-form-title');
+            const prevBtn = document.getElementById('adv-prev-btn');
+            const nextBtn = document.getElementById('adv-next-btn');
+            const submitBtn = document.getElementById('adv-submit-btn');
+
+            contentDivs.forEach(div => div.style.display = 'none');
+            document.getElementById(advancedFormSteps[step - 1]).style.display = 'block';
+
+            const titles = { 1: 'Step 1: User Identity Verification', 2: 'Step 2: Vehicle Technical Details', 3: 'Step 3: Documentation & Summary' };
+            title.textContent = titles[step];
+            
+            sidebarItems.forEach((item, index) => {
+                item.classList.remove('active');
+                if (index < step) item.classList.add('active');
+            });
+
+            prevBtn.style.display = (step > 1) ? 'block' : 'none';
+            nextBtn.style.display = (step < 3) ? 'block' : 'none';
+            submitBtn.style.display = (step === 3) ? 'block' : 'none';
+
+            if (step === 3) {
+                updateAdvancedSummary();
+            }
+        };
+        
+        const validateAdvancedStep = (stepIndex) => {
+            // Simple validation for required fields
+            if (stepIndex === 1) {
+                const fields = ['advUserName', 'advUserEmail', 'advMobileNumber', 'advPurpose'];
+                for (const field of fields) {
+                    if (!advancedFormData[field]) {
+                        alert(Please fill in the ${field.substring(3).replace(/([A-Z])/g, ' $1').toLowerCase()} field.);
+                        return false;
+                    }
+                }
+                if (!/\S+@\S+\.\S+/.test(advancedFormData.advUserEmail)) {
+                    alert('Please enter a valid email address.');
+                    return false;
+                }
+            }
+            if (stepIndex === 2) {
+                const fields = ['advVehicleType', 'advVehicleModel', 'advManufacturingYear', 'advFuelType', 'advTransmission'];
+                 for (const field of fields) {
+                    if (!advancedFormData[field]) {
+                        alert(Please select or fill in the ${field.substring(3).replace(/([A-Z])/g, ' $1').toLowerCase()} field.);
+                        return false;
+                    }
+                }
+            }
+            return true;
+        };
+        
+        const updateAdvancedSummary = () => {
+            const summaryDiv = document.getElementById('advanced-summary-data');
+            
+            const userFields = [
+                { label: 'User Name', key: 'advUserName' }, { label: 'User Email', key: 'advUserEmail' }, 
+                { label: 'Mobile Number', key: 'advMobileNumber' }, { label: 'Purpose', key: 'advPurpose' }
+            ];
+            const vehicleFields = [
+                { label: 'Vehicle Type', key: 'advVehicleType' }, { label: 'Vehicle Model', key: 'advVehicleModel' },
+                { label: 'Mfg. Year', key: 'advManufacturingYear' }, { label: 'Fuel Type', key: 'advFuelType' }, 
+                { label: 'Transmission', key: 'advTransmission' }
+            ];
+            const docFields = [
+                { label: 'RC Document', key: 'advRCUpload' }, { label: 'Insurance Doc', key: 'advInsuranceUpload' },
+                { label: 'Pollution Cert', key: 'advPollutionUpload' }
+            ];
+
+            const renderFields = (fields, title) => {
+                let html = <h4 style="color: #666; margin-top: 15px;">${title}</h4>;
+                html += fields.map(field => `
+                    <div class="summary-item">
+           
